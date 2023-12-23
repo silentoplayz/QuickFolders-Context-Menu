@@ -39,7 +39,7 @@ QuickFolders-ContextMenu is a PowerShell script designed to enhance your Windows
 Contributions to the QuickFolders-ContextMenu script are welcome. Please feel free to fork the repository, make changes, and submit pull requests.
 
 ## License
-This project is licensed under [LICENSE NAME] - see the [LICENSE](LICENSE) file for details.
+This project is licensed under MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Disclaimer
 This script modifies the Windows Registry. While it has been tested and is expected to work as intended, users should use it at their own risk. Always ensure you have backups of important data before making changes to the system registry.
