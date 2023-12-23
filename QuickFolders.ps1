@@ -1,3 +1,9 @@
+# Function to Write Log
+function Write-Log {
+    param ([string]$Message)
+    Write-Host $Message
+}
+
 # Function to Add QuickFolders to Context Menu
 function Add-QuickFoldersToContextMenu {
     try {
@@ -9,9 +15,9 @@ function Add-QuickFoldersToContextMenu {
         }
 
         Add-SubMenuItems -QuickFoldersPath $quickFoldersPath
-        Write-Host "QuickFolders menu option added to the desktop context menu."
+        Write-Log "QuickFolders menu option added to the desktop context menu."
     } catch {
-        Write-Host "Error adding QuickFolders to context menu: $_"
+        Write-Log "Error adding QuickFolders to context menu: $_"
     }
 }
 
@@ -20,9 +26,9 @@ function Remove-QuickFoldersFromContextMenu {
     try {
         $quickFoldersPath = "HKCU:\Software\Classes\Directory\Background\shell\QuickFolders"
         Remove-ExistingKey -Path $quickFoldersPath
-        Write-Host "QuickFolders menu option removed from the desktop context menu."
+        Write-Log "QuickFolders menu option removed from the desktop context menu."
     } catch {
-        Write-Host "Error removing QuickFolders from context menu: $_"
+        Write-Log "Error removing QuickFolders from context menu: $_"
     }
 }
 
@@ -66,19 +72,25 @@ function Prompt-UserAction {
     try {
         $action = Read-Host "Do you want to Add (A) or Remove (R) the QuickFolders option? (A/R)"
         switch ($action.ToUpper()) {
-            "A" { Add-QuickFoldersToContextMenu }
-            "R" { Remove-QuickFoldersFromContextMenu }
-            default { Write-Host "Invalid selection. Please enter 'A' to Add or 'R' to Remove."; Prompt-UserAction }
+            "A" {
+                $confirm = Read-Host "Are you sure you want to ADD QuickFolders to the context menu? (Y/N)"
+                if ($confirm -eq 'Y') { Add-QuickFoldersToContextMenu }
+            }
+            "R" {
+                $confirm = Read-Host "Are you sure you want to REMOVE QuickFolders from the context menu? (Y/N)"
+                if ($confirm -eq 'Y') { Remove-QuickFoldersFromContextMenu }
+            }
+            default { Write-Log "Invalid selection. Please enter 'A' to Add or 'R' to Remove."; Prompt-UserAction }
         }
     } catch {
-        Write-Host "An error occurred: $_"
+        Write-Log "An error occurred: $_"
     }
 }
 
 # Check for Administrative Privileges
 function Check-AdminPrivileges {
     if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        Write-Host "Please run this script as an Administrator."
+        Write-Log "Please run this script as an Administrator."
         exit
     }
 }
