@@ -4,44 +4,35 @@ function Write-Log {
         [string]$Message,
         [switch]$Verbose
     )
-    if ($Verbose) {
-        Write-Host "VERBOSE: $Message"
-    } else {
-        Write-Host $Message
-    }
+    $prefix = if ($Verbose) { "VERBOSE: " } else { "" }
+    Write-Host "${prefix}$Message"
 }
 
-# Function to Add QuickFolders to Context Menu
-function Add-QuickFoldersToContextMenu {
+# Function to Manage QuickFolders in Context Menu
+function Manage-QuickFoldersContextMenu {
     param (
+        [string]$Action,
         [switch]$Verbose
     )
+    $quickFoldersPath = "HKCU:\Software\Classes\Directory\Background\shell\QuickFolders"
     try {
-        $quickFoldersPath = "HKCU:\Software\Classes\Directory\Background\shell\QuickFolders"
-        Remove-ExistingKey -Path $quickFoldersPath -Verbose:$Verbose
-        Create-RegistryKey -Path $quickFoldersPath -Properties @{
-            "MUIVerb" = "QuickFolders"
-            "SubCommands" = ""
-        } -Verbose:$Verbose
-
-        Add-SubMenuItems -QuickFoldersPath $quickFoldersPath -Verbose:$Verbose
-        Write-Log "QuickFolders menu option added to the desktop context menu." -Verbose:$Verbose
+        switch ($Action) {
+            "Add" {
+                Remove-ExistingKey -Path $quickFoldersPath -Verbose:$Verbose
+                Create-RegistryKey -Path $quickFoldersPath -Properties @{
+                    "MUIVerb" = "QuickFolders"
+                    "SubCommands" = ""
+                } -Verbose:$Verbose
+                Add-SubMenuItems -QuickFoldersPath $quickFoldersPath -Verbose:$Verbose
+                Write-Log "QuickFolders menu option added to the desktop context menu." -Verbose:$Verbose
+            }
+            "Remove" {
+                Remove-ExistingKey -Path $quickFoldersPath -Verbose:$Verbose
+                Write-Log "QuickFolders menu option removed from the desktop context menu." -Verbose:$Verbose
+            }
+        }
     } catch {
-        Write-Log "Error adding QuickFolders to context menu: $_" -Verbose:$Verbose
-    }
-}
-
-# Function to Remove QuickFolders from Context Menu
-function Remove-QuickFoldersFromContextMenu {
-    param (
-        [switch]$Verbose
-    )
-    try {
-        $quickFoldersPath = "HKCU:\Software\Classes\Directory\Background\shell\QuickFolders"
-        Remove-ExistingKey -Path $quickFoldersPath -Verbose:$Verbose
-        Write-Log "QuickFolders menu option removed from the desktop context menu." -Verbose:$Verbose
-    } catch {
-        Write-Log "Error removing QuickFolders from context menu: $_" -Verbose:$Verbose
+        Write-Log "Error managing QuickFolders in context menu: $_" -Verbose:$Verbose
     }
 }
 
@@ -97,11 +88,11 @@ function Prompt-UserAction {
         switch ($action.ToUpper()) {
             "A" {
                 $confirm = Read-Host "Are you sure you want to ADD QuickFolders to the context menu? (Y/N)"
-                if ($confirm -eq 'Y') { Add-QuickFoldersToContextMenu -Verbose }
+                if ($confirm -eq 'Y') { Manage-QuickFoldersContextMenu -Action "Add" -Verbose }
             }
             "R" {
                 $confirm = Read-Host "Are you sure you want to REMOVE QuickFolders from the context menu? (Y/N)"
-                if ($confirm -eq 'Y') { Remove-QuickFoldersFromContextMenu -Verbose }
+                if ($confirm -eq 'Y') { Manage-QuickFoldersContextMenu -Action "Remove" -Verbose }
             }
             default { Write-Log "Invalid selection. Please enter 'A' to Add or 'R' to Remove."; Prompt-UserAction }
         }
