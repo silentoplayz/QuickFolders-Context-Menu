@@ -18,17 +18,20 @@ QuickFolders-ContextMenu is a PowerShell script designed to enhance your Windows
 1. **Download the Script**:
    - Download `QuickFoldersContextMenu.ps1` from this repository.
 
-2. **Creating a Shortcut**:
+2. **Creating a Shortcut with Administrative Privileges**:
    - Right-click on the downloaded `.ps1` file.
    - Select `Send to` > `Desktop (create shortcut)`.
    - Right-click on the shortcut created on the desktop and select `Properties`.
-   - In the `Target` field, prepend the existing path with `powershell.exe -ExecutionPolicy Bypass -File `. It should look like this: `powershell.exe -ExecutionPolicy Bypass -File "path\to\your\QuickFoldersContextMenu.ps1"`.
+   - In the `Shortcut` tab, click on the `Advanced` button.
+   - Check the box next to `Run as administrator`.
+   - Click `OK` to close the Advanced Properties window.
+   - In the `Target` field of the Shortcut tab, prepend the existing path with `powershell.exe -ExecutionPolicy Bypass -File `. It should look like this: `powershell.exe -ExecutionPolicy Bypass -File "path\to\your\QuickFoldersContextMenu.ps1"`.
    - Click `OK` to save the changes.
 
 ## Usage
-1. **Run as Administrator**:
-   - Right-click on the shortcut you created.
-   - Select `Run as Administrator`.
+1. **Run the Shortcut**:
+   - Double-click on the shortcut you created on the desktop.
+   - Since the shortcut is set to always run as Administrator, you may see a User Account Control (UAC) prompt asking for permission to allow `powershell.exe` to make changes to your device. Click `Yes` to proceed.
 
 2. **Follow the Prompts**:
    - The script will prompt you to either Add (A) or Remove (R) the QuickFolders option.
