@@ -1,7 +1,7 @@
-# QuickFolders-ContextMenu PowerShell Script
+# QuickFolders-Context-Menu PowerShell Script
 
 ## Description
-QuickFolders-ContextMenu is a PowerShell script designed to enhance your Windows desktop experience. It adds a dynamic submenu to your desktop context menu, providing quick and easy access to all folders located on your desktop. Easily add or remove this feature with administrative privileges. This script is ideal for users seeking to streamline their navigation and improve desktop organization.
+QuickFolders-Context-Menu is a PowerShell script designed to enhance your Windows desktop experience. It adds a dynamic submenu to your desktop context menu, providing quick and easy access to all folders located on your desktop. Easily add or remove this feature with administrative privileges. This script is ideal for users seeking to streamline their navigation and improve desktop organization.
 
 ## Compatibility
 - **Windows 11**: Fully compatible with native PowerShell 5.1. Tested and functional on the latest version of Windows.
@@ -39,7 +39,7 @@ QuickFolders-ContextMenu is a PowerShell script designed to enhance your Windows
    - Type `R` to remove it.
 
 ## Contributing
-Contributions to the QuickFolders-ContextMenu script are welcome. Please feel free to fork the repository, make changes, and submit pull requests.
+Contributions to the QuickFolders-Context-Menu script are welcome. Please feel free to fork the repository, make changes, and submit pull requests.
 
 ## License
 This project is licensed under MIT License - see the [LICENSE](LICENSE) file for details.
