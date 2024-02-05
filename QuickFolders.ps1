@@ -15,6 +15,10 @@ function Manage-QuickFoldersContextMenu {
         [switch]$Verbose
     )
     $quickFoldersPath = "HKCU:\Software\Classes\Directory\Background\shell\QuickFolders"
+	# Check if the QuickFolders key exists and create it if necessary
+    if (-not (Test-Path -Path $quickFoldersPath)) {
+        New-Item -Path $quickFoldersPath -Force | Out-Null
+    }
     try {
         switch ($Action) {
             "Add" {
@@ -105,7 +109,7 @@ function Prompt-UserAction {
 function Check-AdminPrivileges {
     if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Write-Log "Please run this script as an Administrator."
-        exit
+        exit 1
     }
 }
 
