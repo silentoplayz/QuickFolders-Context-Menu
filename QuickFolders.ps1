@@ -9,7 +9,7 @@ function Write-Log {
 }
 
 # Function to Manage QuickFolders in Context Menu
-function Manage-QuickFoldersContextMenu {
+function Update-QuickFoldersContextMenu {
     param (
         [string]$Action,
         [switch]$Verbose
@@ -23,7 +23,7 @@ function Manage-QuickFoldersContextMenu {
         switch ($Action) {
             "Add" {
                 Remove-ExistingKey -Path $quickFoldersPath -Verbose:$Verbose
-                Create-RegistryKey -Path $quickFoldersPath -Properties @{
+                New-RegistryKey -Path $quickFoldersPath -Properties @{
                     "MUIVerb" = "QuickFolders"
                     "SubCommands" = ""
                 } -Verbose:$Verbose
@@ -53,7 +53,7 @@ function Remove-ExistingKey {
 }
 
 # Function to Create Registry Key
-function Create-RegistryKey {
+function New-RegistryKey {
     param (
         [string]$Path,
         [hashtable]$Properties,
@@ -76,29 +76,29 @@ function Add-SubMenuItems {
     $desktopPath = [System.Environment]::GetFolderPath("Desktop")
     Get-ChildItem -Path $desktopPath -Directory | ForEach-Object {
         $subMenuPath = "$QuickFoldersPath\shell\$($_.Name)"
-        Create-RegistryKey -Path $subMenuPath -Properties @{
+        New-RegistryKey -Path $subMenuPath -Properties @{
             "MUIVerb" = $_.Name
         } -Verbose:$Verbose
-        Create-RegistryKey -Path "$subMenuPath\command" -Properties @{
+        New-RegistryKey -Path "$subMenuPath\command" -Properties @{
             "(default)" = "explorer.exe `"$($_.FullName)`""
         } -Verbose:$Verbose
     }
 }
 
 # Function to Prompt User for Action
-function Prompt-UserAction {
+function Request-UserAction {
     try {
         $action = Read-Host "Do you want to Add (A) or Remove (R) the QuickFolders option? (A/R)"
         switch ($action.ToUpper()) {
             "A" {
                 $confirm = Read-Host "Are you sure you want to ADD QuickFolders to the context menu? (Y/N)"
-                if ($confirm -eq 'Y') { Manage-QuickFoldersContextMenu -Action "Add" -Verbose }
+                if ($confirm -eq 'Y') { Update-QuickFoldersContextMenu -Action "Add" -Verbose }
             }
             "R" {
                 $confirm = Read-Host "Are you sure you want to REMOVE QuickFolders from the context menu? (Y/N)"
-                if ($confirm -eq 'Y') { Manage-QuickFoldersContextMenu -Action "Remove" -Verbose }
+                if ($confirm -eq 'Y') { Update-QuickFoldersContextMenu -Action "Remove" -Verbose }
             }
-            default { Write-Log "Invalid selection. Please enter 'A' to Add or 'R' to Remove."; Prompt-UserAction }
+            default { Write-Log "Invalid selection. Please enter 'A' to Add or 'R' to Remove."; Request-UserAction }
         }
     } catch {
         Write-Log "An error occurred: $_"
@@ -106,7 +106,7 @@ function Prompt-UserAction {
 }
 
 # Check for Administrative Privileges
-function Check-AdminPrivileges {
+function Assert-AdminPrivileges {
     if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Write-Log "Please run this script as an Administrator."
         exit 1
@@ -114,5 +114,5 @@ function Check-AdminPrivileges {
 }
 
 # Main Script Execution
-Check-AdminPrivileges
-Prompt-UserAction
+Assert-AdminPrivileges
+Request-UserAction
